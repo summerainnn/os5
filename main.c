@@ -18,10 +18,12 @@ int main(){
         }
         else if(strcmp(argv[0],MKDIR)==0){
             // printf(MKDIR);
+            printf("argc:%d\n",argc);
             mkdir(argv,argc);
         }
         else if(strcmp(argv[0],TOUCH)==0){
             printf(TOUCH);
+            touch(argv,argc);
         }
         else if(strcmp(argv[0],CP)==0){
             printf(CP);

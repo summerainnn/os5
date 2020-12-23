@@ -7,6 +7,7 @@
 #define INVALID 0
 
 
+
 typedef struct super_block {
     int32_t magic_num;                  // 幻数
     int32_t free_block_count;           // 空闲数据块数
@@ -34,7 +35,8 @@ struct dir_item {               // 目录项一个更常见的叫法是 dirent(d
     char name[121];             // 目录项表示的文件/目录的文件名/目录名
 };
 
-char block_buf[1024];
+static char block_buf[1024];
+static char spbuf[1024];
 
 /*
 * 初始化文件系统

@@ -7,8 +7,8 @@
 #define SHUTDOWN "sd"
 
 
-char buf[128];
-char* argv[128];
+static char buf[128];
+static char* argv[128];
 int argc = 0;
 char whitespace[] = " \t\r\n\v";//空格字符
 

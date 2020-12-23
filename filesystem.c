@@ -10,10 +10,9 @@ void init_filesystem(){
     if(open_disk()!=0){
         printf("Open Disk Error !");
     }
-    char buf[1024];
-    disk_read_block(0,buf);
-    disk_read_block(1,buf+512);
-    superblock = (sp_block*)buf;
+    disk_read_block(0,spbuf);
+    disk_read_block(1,spbuf+512);
+    superblock = (sp_block*)spbuf;
     printf("init superblock->free_block_count:%d",superblock->free_block_count);
     
     if(superblock->magic_num==0x2a49fdb1){
@@ -30,45 +29,33 @@ void init_filesystem(){
         superblock->dir_inode_count  = 0;
         memset(superblock->block_map,0,sizeof(superblock->block_map));
         memset(superblock->inode_map,0,sizeof(superblock->inode_map));
-        // 初始化inode
-        // for(int i=0;i<1024;i++){
-        //     inode[i].size=0;
-        //     inode[i].file_type=0;
-        //     inode[i].link=0;
-        //     for(int j=0;j<6;j++){
-        //         inode[i].block_point[j]=0;
-        //     }
-        // }
         superblock->inode_map[0]=0x7;
         char buf_inode[512];
         struct inode *inode_root = (struct inode *)buf_inode;
-        // inode[2].file_type=TYPE_DIR;
-        // inode[2].link=0;
-        // inode[2].block_point[0] = 34;
         (inode_root+2)->file_type=TYPE_DIR;
         (inode_root+2)->link=1;
         (inode_root+2)->block_point[0] = 34;
-        disk_write_block(0,buf);
-        disk_write_block(1,buf+512);
-        disk_write_block(2,buf);
+        disk_write_block(0,spbuf);
+        disk_write_block(1,spbuf+512);
+        disk_write_block(2,buf_inode);
         printf("The system was initialized successfully\n");
+        printf("inodemap[0]%x",superblock->inode_map[0]);
     }
 }
 
 int find_free_inode(){
     for(int i=0;i<32;i++){
-        printf("i:%d\n",i);
-        uint32_t map1 = superblock->inode_map[i];
-        printf("map1:%d\n",map1);
         if(superblock->inode_map[i] == 0xffffffff){
             continue;
         }
-        
         uint32_t map = superblock->inode_map[i];
-        printf("map:%d\n",map);
+        printf("map:%x, i= %d\n",map,i);
         for (int j = 0; j < 32; j++)
         {
             if((map & 1) == 0){
+                superblock->free_inode_count = superblock->free_inode_count - 1;
+                superblock->inode_map[i] = superblock->inode_map[i] | ((uint32_t)1<<j);
+                disk_write_back_block(0,(char *)superblock);
                 return i*32 + j;
             }
             map = map >> 1;
@@ -82,22 +69,25 @@ int find_free_inode(){
 int find_free_block(){
     printf("NO Enough Block");
     for(int i=0;i<128;i++){
-        printf("%d\n",i);
+        printf("i = %d\n",i);
         if(superblock->block_map[i] == 0xffffffff){
             printf("i:%d\n",i);
             continue;
         }
         uint32_t map = superblock->block_map[i];
+        printf("map:%d",map);
         for (int j = 0; j < 32; j++)
         {
             if((map & 1) == 0){
+                superblock->free_block_count = superblock->free_block_count - 1;
+                superblock->block_map[i] = superblock->block_map[i] | ((uint32_t)1<<j);
+                disk_write_back_block(0,(char *)superblock); 
                 return i*128 + j + 34;
             }
             map = map >> 1;
         }
     }
     printf(RED"NO Enough Block");
-    
     shutdown();
     return -1;
 
@@ -113,3 +103,4 @@ void disk_write_back_block(int blockNum,char* buf){
     disk_write_block(blockNum*2,buf);
     disk_write_block(blockNum*2+1,buf+512);
 }
+
