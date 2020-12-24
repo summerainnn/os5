@@ -13,7 +13,6 @@ void init_filesystem(){
     disk_read_block(0,spbuf);
     disk_read_block(1,spbuf+512);
     superblock = (sp_block*)spbuf;
-    printf("init superblock->free_block_count:%d",superblock->free_block_count);
     
     if(superblock->magic_num==0x2a49fdb1){
         printf("Read the system successfully\n");
@@ -39,7 +38,6 @@ void init_filesystem(){
         disk_write_block(1,spbuf+512);
         disk_write_block(2,buf_inode);
         printf("The system was initialized successfully\n");
-        printf("inodemap[0]%x",superblock->inode_map[0]);
     }
 }
 
@@ -49,7 +47,6 @@ int find_free_inode(){
             continue;
         }
         uint32_t map = superblock->inode_map[i];
-        printf("map:%x, i= %d\n",map,i);
         for (int j = 0; j < 32; j++)
         {
             if((map & 1) == 0){
@@ -67,15 +64,11 @@ int find_free_inode(){
 }
 
 int find_free_block(){
-    printf("NO Enough Block");
     for(int i=0;i<128;i++){
-        printf("i = %d\n",i);
         if(superblock->block_map[i] == 0xffffffff){
-            printf("i:%d\n",i);
             continue;
         }
         uint32_t map = superblock->block_map[i];
-        printf("map:%d",map);
         for (int j = 0; j < 32; j++)
         {
             if((map & 1) == 0){

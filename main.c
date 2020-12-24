@@ -18,15 +18,15 @@ int main(){
         }
         else if(strcmp(argv[0],MKDIR)==0){
             // printf(MKDIR);
-            printf("argc:%d\n",argc);
             mkdir(argv,argc);
         }
         else if(strcmp(argv[0],TOUCH)==0){
-            printf(TOUCH);
+            // printf(TOUCH);
             touch(argv,argc);
         }
         else if(strcmp(argv[0],CP)==0){
-            printf(CP);
+            // printf(CP);
+            cp(argv,argc);
         }
         else if(strcmp(argv[0],SHUTDOWN)==0){
             printf(SHUTDOWN);
@@ -37,6 +37,7 @@ int main(){
         }
         else{
             printf(RED"Ext2: command not found: %s\n", argv[0]);
+            printf(WHITE"\n");
         }
     }
 }

@@ -10,6 +10,6 @@ void touch(char* argv[], int argc);
 void cp(char* argv[], int argc);
 void shutdown();
 
-void creatfile(char* name);
-
+void creatfile(char* name,int file_type);
+int isNameNotExist(char* name,int file_type);
 #endif

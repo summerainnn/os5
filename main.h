@@ -4,7 +4,7 @@
 #define MKDIR "mkdir"
 #define TOUCH "touch"
 #define CP "cp"
-#define SHUTDOWN "sd"
+#define SHUTDOWN "shutdown"
 
 
 static char buf[128];

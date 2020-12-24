@@ -54,14 +54,14 @@ int disk_read_block(unsigned int block_num, char* buf)
 
 int disk_write_block(unsigned int block_num, char* buf)
 {
-        printf("something change in block_num:%d\n",block_num);
-        if(block_num==0){
-                printf("magic_num:%x\n",((sp_block *)buf)->magic_num);
-                printf("magic_num:%x\n",((sp_block *)buf)->inode_map[0]);
-                printf("magic_num:%x\n",((sp_block *)buf)->block_map[0]);
-                printf("magic_num:%x\n",((sp_block *)buf)->free_inode_count);
-                printf("magic_num:%x\n",((sp_block *)buf)->free_block_count);
-        }
+        // printf("something change in block_num:%d\n",block_num);
+        // if(block_num==0){
+        //         printf("magic_num:%x\n",((sp_block *)buf)->magic_num);
+        //         printf("magic_num:%x\n",((sp_block *)buf)->inode_map[0]);
+        //         printf("magic_num:%x\n",((sp_block *)buf)->block_map[0]);
+        //         printf("magic_num:%x\n",((sp_block *)buf)->free_inode_count);
+        //         printf("magic_num:%x\n",((sp_block *)buf)->free_block_count);
+        // }
         if(disk == 0){
                 return -1;
         }
